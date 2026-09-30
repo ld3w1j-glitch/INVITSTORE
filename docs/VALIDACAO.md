@@ -2,7 +2,7 @@
 
 ## Resultado
 
-**25 testes automatizados passaram**, executados com Python 3.12 em Linux e as dependências de `requirements.txt`. Também foram verificadas 14 combinações de página e largura no Chromium 133, mais a conferência final do editor no celular.
+**26 testes automatizados passaram**, executados com Python 3.12 em Linux e as dependências de `requirements.txt`. Também foram verificadas 14 combinações de página e largura no Chromium 133, mais a conferência final do editor no celular.
 
 ## Fluxos exercitados
 
@@ -21,6 +21,7 @@
 - Permissões sobre categorias e bloqueio de exclusão de categoria em uso.
 - Ordenação pelo preço exibido, incluindo opções com preço diferente do preço base.
 - Persistência de contas e produtos ao reinicializar o aplicativo.
+- Configuração do Railway: exige volume e mantém a chave gerada entre reinicializações.
 - Redefinição de senha e limitação de tentativas de login.
 
 ## Navegador
@@ -34,6 +35,8 @@ A resposta que direciona ao WhatsApp foi interceptada para conferir número, var
 ## Inicialização
 
 O cadastro inicial interativo foi executado em um diretório novo e repetido para confirmar que não recria contas nem altera senhas. O bootstrap de produção também foi executado duas vezes, a segunda sem a variável de senha inicial, preservando a conta criada.
+
+Na correção 2.0.1, o servidor de produção foi iniciado duas vezes com um diretório de dados simulado como volume. Em ambas as execuções, `/health` respondeu 200, a primeira conta continuou única e a chave gerada permaneceu idêntica. A montagem real e a interface do Railway dependem da configuração do projeto hospedado.
 
 ## Limites desta verificação
 

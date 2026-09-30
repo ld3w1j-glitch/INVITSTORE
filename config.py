@@ -9,11 +9,19 @@ load_dotenv(BASE_DIR / '.env')
 
 def settings():
     data = Path(os.getenv('DATA_DIR', str(BASE_DIR / 'instance'))).resolve()
-    data.mkdir(parents=True, exist_ok=True)
     production = os.getenv('APP_ENV') == 'production'
+    if os.getenv('REQUIRE_DATA_VOLUME') == '1':
+        railway_mount = os.getenv('RAILWAY_VOLUME_MOUNT_PATH')
+        if os.getenv('RAILWAY_PROJECT_ID'):
+            mounted = railway_mount == str(data)
+        else:
+            mounted = data.is_mount()
+        if not mounted:
+            raise RuntimeError(f'Configure um volume persistente montado em {data} antes de iniciar a InvitStore.')
+    data.mkdir(parents=True, exist_ok=True)
     secret = os.getenv('SECRET_KEY', '').strip()
-    if production and len(secret) < 32:
-        raise RuntimeError('Defina SECRET_KEY com pelo menos 32 caracteres no ambiente de produção.')
+    if production and secret and len(secret) < 32:
+        raise RuntimeError('SECRET_KEY, quando informada, precisa ter pelo menos 32 caracteres.')
     if not secret:
         secret_file = data / 'secret.key'
         if not secret_file.exists():

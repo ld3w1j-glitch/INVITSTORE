@@ -1,4 +1,5 @@
 import io
+import os
 import re
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
@@ -8,6 +9,7 @@ from werkzeug.datastructures import MultiDict
 from app import create_app
 from app.extensions import db
 from app.models import User, Product, Category, Variant
+from config import settings
 from conftest import PASSWORD
 
 def message(response):
@@ -176,3 +178,21 @@ def test_wrong_login_rate_limit(client):
     for _ in range(8):
         assert client.post('/login',data={'email':'a@example.test','password':'errada'}).status_code == 401
     assert client.post('/login',data={'email':'a@example.test','password':'errada'}).status_code == 429
+
+def test_railway_volume_and_generated_secret_are_persistent(monkeypatch,tmp_path):
+    monkeypatch.setenv('APP_ENV','production')
+    monkeypatch.setenv('DATA_DIR',str(tmp_path))
+    monkeypatch.setenv('REQUIRE_DATA_VOLUME','1')
+    monkeypatch.setenv('RAILWAY_PROJECT_ID','test-project')
+    monkeypatch.delenv('RAILWAY_VOLUME_MOUNT_PATH',raising=False)
+    monkeypatch.delenv('SECRET_KEY',raising=False)
+    with pytest.raises(RuntimeError,match='volume persistente'):
+        settings()
+    assert not (tmp_path/'secret.key').exists()
+    monkeypatch.setenv('RAILWAY_VOLUME_MOUNT_PATH',str(tmp_path))
+    key=settings()['SECRET_KEY']
+    assert len(key)==64 and settings()['SECRET_KEY']==key
+    assert (tmp_path/'secret.key').read_text()==key
+    monkeypatch.setenv('SECRET_KEY','muito-curta')
+    with pytest.raises(RuntimeError,match='pelo menos 32'):
+        settings()

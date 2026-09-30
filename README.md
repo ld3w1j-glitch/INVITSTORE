@@ -1,6 +1,6 @@
 # InvitStore · Loja e painel administrativo
 
-Versão 2.0.0 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
+Versão 2.0.1 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
 
 A identidade segue a InvitStore: a marca original, tons de creme e marrom, títulos Bookman e textos Lato. A organização em módulos, templates e arquivos estáticos acompanha o padrão estrutural do projeto de referência fornecido.
 
@@ -14,7 +14,7 @@ A identidade segue a InvitStore: a marca original, tons de creme e marrom, títu
 
 Mantenha o terminal aberto. Para encerrar, pressione Ctrl+C. Nas próximas execuções, as contas e os produtos são preservados. Não existe senha padrão.
 
-**Este endereço é local.** Para o público acessar pela internet, publique a aplicação seguindo `docs/PUBLICACAO.md`. Esta entrega contém o código e a configuração; não inclui uma hospedagem já publicada.
+**Este endereço é local.** Para o público acessar pela internet, publique a aplicação seguindo `docs/PUBLICACAO.md`. Em Railway, conecte um volume em `/data` e configure `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_WHATSAPP` e `ADMIN_PASSWORD` antes da primeira execução. A chave `SECRET_KEY` é gerada automaticamente nesse volume se você não informá-la. Esta entrega contém o código e a configuração; não inclui uma hospedagem já publicada.
 
 ## Linux e macOS
 

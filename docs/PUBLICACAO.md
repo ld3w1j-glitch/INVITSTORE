@@ -5,20 +5,20 @@ O projeto inclui Dockerfile e configuração para Railway, mantendo a organizaç
 ## Railway
 
 1. Coloque o conteúdo da pasta `InvitStore_Web_v2` na raiz de um repositório privado e conecte-o a um serviço Railway. O `Dockerfile` é usado para construir a aplicação.
-2. Adicione **um volume persistente montado em `/data`**. Isso preserva o SQLite e as fotos entre reinicializações e novas publicações.
-3. Configure estas variáveis no serviço:
+2. No projeto Railway, crie **um volume conectado a este serviço**, com **Mount Path `/data`**. O processo não inicia sem ele. Isso preserva o SQLite, as fotos e a chave de sessão entre reinicializações e novas publicações.
+3. Abra o serviço → **Variables** → **New Variable** (ou **RAW Editor**) e cadastre os dados da primeira conta. As alterações precisam ser aplicadas em **Deploy**. Não coloque senhas no repositório:
 
 | Variável | Valor |
 |---|---|
 | `APP_ENV` | `production` |
 | `DATA_DIR` | `/data` |
-| `SECRET_KEY` | Chave aleatória com pelo menos 32 caracteres |
+| `SECRET_KEY` | Opcional. Se omitida, uma chave forte é gerada uma vez no volume `/data` |
 | `ADMIN_NAME` | Nome público do principal |
 | `ADMIN_EMAIL` | E-mail de acesso do principal |
 | `ADMIN_WHATSAPP` | WhatsApp brasileiro com DDD, preferencialmente `55` + DDD + número |
 | `ADMIN_PASSWORD` | Senha escolhida, entre 10 e 128 caracteres |
 
-Para gerar uma chave: `python -c "import secrets; print(secrets.token_hex(32))"`.
+Se preferir informar uma chave própria, gere-a com `python -c "import secrets; print(secrets.token_hex(32))"` e mantenha o mesmo valor em atualizações. O `Dockerfile` já define `APP_ENV=production` e `DATA_DIR=/data`; não altere essas configurações no Railway.
 
 4. Publique com **uma réplica**. O processo usa Gunicorn com um worker e quatro threads, compatível com o banco SQLite desta versão.
 5. Gere o domínio HTTPS no serviço. Defina `PUBLIC_BASE_URL` como a URL completa, por exemplo `https://sua-loja.up.railway.app`, e publique essa configuração.

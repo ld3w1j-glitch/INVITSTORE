@@ -105,4 +105,4 @@ def media(filename):
 @site_bp.get('/health')
 def health():
     db.session.execute(select(1))
-    return {'status':'ok', 'app':'InvitStore', 'version':'2.0.0'}
+    return {'status':'ok', 'app':'InvitStore', 'version':'2.0.1'}
