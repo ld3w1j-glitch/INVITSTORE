@@ -3,9 +3,9 @@ from pathlib import Path
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, abort, current_app, send_from_directory
 from sqlalchemy import select, or_, func
 from app.extensions import db
-from app.models import Product, Category, User, Variant
+from app.models import Product, Category, User, Variant, PendingOrder, PendingOrderItem
 from app.services.cart import selection, add_item, resolve_cart, whatsapp_url
-from app.services.validation import integer, text
+from app.services.validation import integer, text, phone
 
 site_bp = Blueprint('site', __name__)
 
@@ -38,7 +38,8 @@ def direct_whatsapp(product_id):
     p = db.get_or_404(Product, product_id)
     try:
         item = selection(p, request.form.get('variant_id'), request.form.get('quantity', '1'))
-        return redirect(whatsapp_url(p.owner, [item]), 303)
+        order = create_pending(p.owner, [item])
+        return redirect(whatsapp_url(p.owner, [item], order_id=order.id), 303)
     except ValueError as e:
         flash(str(e), 'error')
         return redirect(url_for('site.product', product_id=p.id), 303)
@@ -87,7 +88,12 @@ def checkout(seller_id):
     try:
         name = text(request.form.get('name'), 'Nome', 80, 0)
         notes = text(request.form.get('notes'), 'Observações', 500, 0)
-        return redirect(whatsapp_url(group['seller'], group['items'], name, notes), 303)
+        contact = phone(request.form.get('phone')) if request.form.get('phone', '').strip() else None
+        order = create_pending(group['seller'], group['items'], name, notes, contact)
+        cart = dict(session.get('cart', {}))
+        for item in group['items']: cart.pop(item['key'], None)
+        session['cart'] = cart
+        return redirect(whatsapp_url(group['seller'], group['items'], name, notes, order_id=order.id), 303)
     except ValueError as e:
         flash(str(e), 'error')
         return redirect(url_for('site.cart'), 303)
@@ -105,4 +111,18 @@ def media(filename):
 @site_bp.get('/health')
 def health():
     db.session.execute(select(1))
-    return {'status':'ok', 'app':'InvitStore', 'version':'2.0.2'}
+    return {'status':'ok', 'app':'InvitStore', 'version':'2.1.0'}
+
+def create_pending(seller, items, name='', notes='', contact=None):
+    from app.admin.management import product_cost
+    order = PendingOrder(seller_id=seller.id, customer_name=name or 'Cliente não informado',
+                         customer_phone=contact, notes=notes, total_cents=sum(i['total'] for i in items))
+    for item in items:
+        order.items.append(PendingOrderItem(product_id=item['product'].id,
+            variant_id=item['variant'].id if item['variant'] else None,
+            product_name=item['product'].name,
+            variant_name=item['variant'].label if item['variant'] else None,
+            quantity=item['quantity'], unit_price_cents=item['price'],
+            unit_cost_cents=product_cost(item['product'])))
+    db.session.add(order); db.session.commit()
+    return order

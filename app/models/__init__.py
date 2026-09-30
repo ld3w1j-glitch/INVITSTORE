@@ -79,3 +79,63 @@ class LoginAttempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(64), nullable=False, index=True)
     created_at = db.Column(db.DateTime, default=now, nullable=False, index=True)
+
+class Supply(db.Model):
+    __tablename__ = 'supplies'
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    name = db.Column(db.String(120), nullable=False)
+    kind = db.Column(db.String(20), nullable=False, default='insumo')
+    unit = db.Column(db.String(20), nullable=False, default='un')
+    stock = db.Column(db.Float, nullable=False, default=0)
+    minimum = db.Column(db.Float, nullable=False, default=0)
+    cost_cents = db.Column(db.Integer, nullable=False, default=0)
+    waste_percent = db.Column(db.Float, nullable=False, default=0)
+
+class ProductSupply(db.Model):
+    __tablename__ = 'product_supplies'
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id', ondelete='CASCADE'), nullable=False, index=True)
+    supply_id = db.Column(db.Integer, db.ForeignKey('supplies.id', ondelete='CASCADE'), nullable=False)
+    quantity = db.Column(db.Float, nullable=False)
+    supply = db.relationship('Supply')
+    __table_args__ = (db.UniqueConstraint('product_id', 'supply_id'),)
+
+class Expense(db.Model):
+    __tablename__ = 'expenses'
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    description = db.Column(db.String(150), nullable=False)
+    category = db.Column(db.String(60), nullable=False)
+    amount_cents = db.Column(db.Integer, nullable=False)
+    incurred_at = db.Column(db.DateTime, default=now, nullable=False)
+
+class PendingOrder(db.Model):
+    __tablename__ = 'pending_orders'
+    id = db.Column(db.Integer, primary_key=True)
+    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    customer_name = db.Column(db.String(80), nullable=False, default='Cliente não informado')
+    customer_phone = db.Column(db.String(15))
+    notes = db.Column(db.String(500))
+    status = db.Column(db.String(20), nullable=False, default='pendente', index=True)
+    total_cents = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=now, nullable=False)
+    decided_at = db.Column(db.DateTime)
+    seller = db.relationship('User')
+    items = db.relationship('PendingOrderItem', back_populates='order', cascade='all, delete-orphan')
+
+class PendingOrderItem(db.Model):
+    __tablename__ = 'pending_order_items'
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('pending_orders.id', ondelete='CASCADE'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    variant_id = db.Column(db.Integer, db.ForeignKey('variants.id', ondelete='SET NULL'))
+    product_name = db.Column(db.String(140), nullable=False)
+    variant_name = db.Column(db.String(100))
+    quantity = db.Column(db.Integer, nullable=False)
+    unit_price_cents = db.Column(db.Integer, nullable=False)
+    unit_cost_cents = db.Column(db.Integer, nullable=False, default=0)
+    order = db.relationship('PendingOrder', back_populates='items')
+
+    @property
+    def subtotal_cost_cents(self): return self.unit_cost_cents * self.quantity

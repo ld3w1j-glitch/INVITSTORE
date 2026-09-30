@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from app.extensions import db
-from app.models import Product, Category, Variant, User
+from app.models import Product, Category, Variant, User, PendingOrderItem
 from app.core.security import require_owner, superadmin_required
 from app.services import validation as v
 from app.services.uploads import save_image, remove_image
@@ -106,6 +106,10 @@ def edit_product(product_id):
 def delete_product(product_id):
     p = db.get_or_404(Product, product_id)
     require_owner(p)
+    if db.session.scalar(select(PendingOrderItem.id).where(PendingOrderItem.product_id == p.id).limit(1)):
+        p.active = False; db.session.commit()
+        flash('Produto com histórico de pedidos: foi ocultado da vitrine para preservar os registros.', 'success')
+        return redirect(url_for('admin.products'), 303)
     image = p.image
     db.session.delete(p)
     db.session.commit()

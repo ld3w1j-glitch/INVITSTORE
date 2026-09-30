@@ -49,8 +49,8 @@ def resolve_cart():
             errors.append(dict(key=key, name=product.name if product else 'Produto removido'))
     return list(groups.values()), errors
 
-def whatsapp_url(seller, items, name='', notes=''):
-    lines = [f'Olá, {seller.name}! Gostaria de fazer este pedido na InvitStore:', '']
+def whatsapp_url(seller, items, name='', notes='', order_id=None):
+    lines = [f'Olá, {seller.name}! Gostaria de fazer este pedido na InvitStore' + (f' #{order_id}' if order_id else '') + ':', '']
     for item in items:
         p = item['product']
         lines.extend([f'• {p.name} [IV-{p.id:05}]'])
@@ -59,7 +59,7 @@ def whatsapp_url(seller, items, name='', notes=''):
     lines.extend(['', f"Total dos itens: {brl(sum(i['total'] for i in items))}"])
     if name: lines.append(f'Nome: {name}')
     if notes: lines.append(f'Observações: {notes}')
-    lines.extend(['', 'Aguardo a confirmação de disponibilidade, entrega e pagamento. Frete não incluído.'])
+    lines.extend(['', 'Pedido aguardando sua aprovação. Disponibilidade, entrega e pagamento a confirmar. Frete não incluído.'])
     base = current_app.config.get('PUBLIC_BASE_URL')
     if base and len(items) == 1: lines.append(f"Produto: {base}/produto/{items[0]['product'].id}")
     return 'https://wa.me/' + seller.whatsapp + '?' + urlencode({'text': '\n'.join(lines)})

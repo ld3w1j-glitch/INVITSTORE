@@ -36,8 +36,10 @@ def create_app(test_config=None):
     from app.auth.routes import auth_bp
     from app.admin.routes import admin_bp
     from app.site.routes import site_bp
+    from app.admin.management import management_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(management_bp, url_prefix='/admin')
     app.register_blueprint(site_bp)
 
     from app.services.validation import brl
@@ -45,7 +47,7 @@ def create_app(test_config=None):
     app.jinja_env.filters['price_input'] = lambda cents: f'{(cents or 0)/100:.2f}'
     @app.context_processor
     def common():
-        return {'cart_count':sum(session.get('cart', {}).values()), 'version':'2.0.2'}
+        return {'cart_count':sum(session.get('cart', {}).values()), 'version':'2.1.0'}
 
     @app.after_request
     def headers(response):
