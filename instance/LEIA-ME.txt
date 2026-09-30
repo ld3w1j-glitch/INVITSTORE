@@ -1,0 +1,4 @@
+Nesta pasta serão criados o banco invitstore.db, a chave local secret.key e a pasta uploads.
+Faça backup de toda esta pasta com o servidor desligado.
+Não publique esta pasta em repositórios nem compartilhe sua chave ou seu banco de dados.
+O pacote original vem sem contas, sem senhas prontas e sem produtos de demonstração.
