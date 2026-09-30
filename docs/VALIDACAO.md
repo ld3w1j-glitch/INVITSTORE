@@ -4,6 +4,8 @@
 
 **26 testes automatizados passaram**, executados com Python 3.12 em Linux e as dependências de `requirements.txt`. Também foram verificadas 14 combinações de página e largura no Chromium 133, mais a conferência final do editor no celular.
 
+Na atualização 2.0.2, a arte `.ai` foi exportada como SVG vetorial. Logotipo, selo, etiqueta e símbolo foram conferidos em cinco telas desktop e celular: todos os arquivos carregaram, sem erros de JavaScript e sem transbordamento horizontal. As prévias foram refeitas com essas versões.
+
 ## Fluxos exercitados
 
 - Catálogo, pesquisa e seleção de produtos sem login de cliente.

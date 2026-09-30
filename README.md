@@ -1,8 +1,8 @@
 # InvitStore · Loja e painel administrativo
 
-Versão 2.0.1 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
+Versão 2.0.2 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
 
-A identidade segue a InvitStore: a marca original, tons de creme e marrom, títulos Bookman e textos Lato. A organização em módulos, templates e arquivos estáticos acompanha o padrão estrutural do projeto de referência fornecido.
+A identidade segue a InvitStore: a marca vetorial exportada do arquivo Illustrator `design/marca-invitstore-original.ai`, tons de creme e marrom, títulos Bookman e textos Lato. Logotipo, selo, símbolo e etiqueta são utilizados como SVG na loja. A organização em módulos, templates e arquivos estáticos acompanha o padrão estrutural do projeto de referência fornecido.
 
 ## Começar no Windows
 
@@ -34,7 +34,7 @@ O programa usa Waitress para o servidor local. A abertura automática do navegad
 4. Se houver opções, adicione variações como “Preto / G” ou “Natural / 500 ml”. Cada opção tem estoque próprio e pode usar o preço base ou outro preço.
 5. Em **Administradores**, o administrador principal cria as contas da equipe. Cada novo administrador cadastra e gerencia os próprios produtos.
 
-O catálogo começa vazio para receber seus produtos reais. As imagens da marca são institucionais e não representam estoque à venda.
+O catálogo começa vazio para receber seus produtos reais. As versões da marca no site são institucionais e não representam estoque à venda.
 
 Há prévias da interface em `docs/previas/`, com cadastros temporários usados na revisão visual.
 

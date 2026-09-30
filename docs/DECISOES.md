@@ -26,7 +26,7 @@ Há proteção CSRF nos formulários, senhas com hash, limitação de tentativas
 
 ## Identidade e interface
 
-Paleta baseada no manual: creme `#F6EFDF`, espresso `#3E2A1F`, cacau `#6B4A3A`, bege `#DCC9B1` e terra `#8C6A52`. A marca é o arquivo original fornecido, enquadrado em SVG. As fontes ficam no próprio projeto.
+Paleta baseada no manual: creme `#F6EFDF`, espresso `#3E2A1F`, cacau `#6B4A3A`, bege `#DCC9B1` e terra `#8C6A52`. O arquivo Illustrator recebido, `design/marca-invitstore-original.ai`, tem uma representação PDF vetorial. Dela foram exportadas as quatro versões SVG da marca para header, painel, favicon e destaque da vitrine. O navegador recebe vetores sem precisar abrir o formato `.ai`; a fonte permanece editável no projeto. As fontes tipográficas ficam no próprio projeto.
 
 O cliente não precisa entrar. O painel funciona em desktop e celular, com envio de foto pelo dispositivo e campos para opções de produtos. As prévias incluídas usam dados temporários apenas para mostrar o layout; esses cadastros não fazem parte da instalação.
 

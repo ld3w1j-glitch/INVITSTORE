@@ -1,4 +1,4 @@
-# Correção do erro SECRET_KEY no Railway · 2.0.1
+# Correção do erro SECRET_KEY no Railway · desde 2.0.1
 
 A captura enviada mostrou a mensagem `Defina SECRET_KEY com pelo menos 32 caracteres no ambiente de produção.` O processo encerrava antes de criar o banco e a primeira conta.
 

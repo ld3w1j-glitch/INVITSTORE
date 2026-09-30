@@ -16,7 +16,7 @@
 {% endif %}</svg>
 {%- endmacro %}
 {% macro brand(kind='main', class='') -%}
-<svg class="brand brand-{{ kind }} {{ class }}" role="img" aria-label="InvitStore — Itens em geral" viewBox="{{ '242 612 325 368' if kind == 'icon' else '75 220 918 294' }}"><image href="{{ url_for('static', filename='img/marca-original.png') }}" width="1536" height="1024"/></svg>
+<img class="brand brand-{{ kind }} {{ class }}" src="{{ url_for('static', filename='img/marca-simbolo.svg' if kind == 'icon' else 'img/marca-principal.svg') }}" width="{{ 340 if kind == 'icon' else 920 }}" height="{{ 378 if kind == 'icon' else 306 }}" alt="{{ 'Símbolo InvitStore' if kind == 'icon' else 'InvitStore — Itens em geral' }}">
 {%- endmacro %}
 {% macro csrf_field() -%}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{%- endmacro %}
 {% macro product_image(p, class='') -%}
