@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, session, send_file
 from flask_login import current_user, login_required
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
@@ -6,9 +6,13 @@ from app.extensions import db
 from app.models import Product, Category, Variant, User, PendingOrderItem
 from app.core.security import require_owner, superadmin_required
 from app.services import validation as v
-from app.services.uploads import save_image, remove_image
+from app.services.uploads import save_image, remove_image, save_profile_image, remove_profile_image, profile_image_path, profile_image_exists
 
 admin_bp = Blueprint('admin', __name__)
+
+@admin_bp.context_processor
+def profile_photo_context():
+    return {'has_profile_photo': current_user.is_authenticated and profile_image_exists(current_user.id)}
 
 def scope(query):
     return query if current_user.is_superadmin else query.where(Product.owner_id == current_user.id)
@@ -146,6 +150,33 @@ def delete_category(category_id):
     else:
         db.session.delete(cat); db.session.commit(); flash('Categoria excluída.', 'success')
     return redirect(url_for('admin.categories'), 303)
+
+@admin_bp.get('/perfil/foto')
+@login_required
+def profile_photo():
+    path = profile_image_path(current_user.id)
+    if not path.is_file():
+        abort(404)
+    response = send_file(path, mimetype='image/webp', conditional=True, max_age=0)
+    response.headers['Cache-Control'] = 'private, no-store'
+    return response
+
+@admin_bp.post('/perfil/foto')
+@login_required
+def update_profile_photo():
+    try:
+        save_profile_image(request.files.get('profile_image'), current_user.id)
+        flash('Foto de perfil atualizada.', 'success')
+    except ValueError as e:
+        flash(str(e), 'error')
+    return redirect(url_for('admin.profile'), 303)
+
+@admin_bp.post('/perfil/foto/remover')
+@login_required
+def delete_profile_photo():
+    remove_profile_image(current_user.id)
+    flash('Foto de perfil removida.', 'success')
+    return redirect(url_for('admin.profile'), 303)
 
 @admin_bp.route('/perfil', methods=['GET', 'POST'])
 @login_required
