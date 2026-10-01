@@ -47,7 +47,7 @@ def create_app(test_config=None):
     app.jinja_env.filters['price_input'] = lambda cents: f'{(cents or 0)/100:.2f}'
     @app.context_processor
     def common():
-        return {'cart_count':sum(session.get('cart', {}).values()), 'version':'2.3.0'}
+        return {'cart_count':sum(session.get('cart', {}).values()), 'version':'2.4.0'}
 
     @app.after_request
     def headers(response):

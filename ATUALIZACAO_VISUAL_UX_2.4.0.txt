@@ -1,0 +1,31 @@
+INVITSTORE 2.4.0 — REFINAMENTO VISUAL E DE EXPERIÊNCIA
+
+COMO ATUALIZAR
+1. Extraia este ZIP na raiz do projeto InvitStore.
+2. Confirme a substituição dos arquivos existentes.
+3. Faça o deploy normalmente no Railway.
+
+MELHORIAS PRINCIPAIS
+- Cabeçalho fixo, mais leve e com busca em maior destaque.
+- Carrossel com legendas, progresso e controle de pausa/continuação.
+- Introdução editorial explicando a proposta da InvitStore.
+- Cards de produtos com acabamento premium e ação mais clara.
+- Filtros e categorias mais fáceis de identificar.
+- Bloco visual explicando o fluxo de pedido pelo WhatsApp.
+- Melhorias visuais nas páginas de produto e carrinho.
+- Botão de retorno ao topo.
+- Animações respeitam a preferência de movimento reduzido.
+- Layout ajustado para computador, tablet e celular.
+
+PRESERVADO
+- Banco de dados, produtos, imagens e administradores.
+- Galeria com até 8 imagens e imagens das variações.
+- Gestão, custos, embalagens, despesas e previsão de lucro.
+- Pedidos pendentes com aprovação ou recusa do vendedor.
+- Estoque e integração com WhatsApp.
+- Volume persistente /data no Railway.
+
+VALIDAÇÃO
+- JavaScript validado.
+- 27 testes automatizados aprovados.
+
