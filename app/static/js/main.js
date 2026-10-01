@@ -95,3 +95,48 @@ document.addEventListener('change', event => {
   if (!img) {img=new Image();input.closest('.variant-image-field').prepend(img);}
   img.src=URL.createObjectURL(file);img.alt='Prévia da imagem da variação';
 });
+
+const campaignCarousel = document.querySelector('[data-campaign-carousel]');
+if (campaignCarousel) {
+  const slides = [...campaignCarousel.querySelectorAll('[data-carousel-slide]')];
+  const dots = [...campaignCarousel.querySelectorAll('[data-carousel-dot]')];
+  const status = campaignCarousel.querySelector('[data-carousel-status]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
+  let timer;
+  let touchStartX = 0;
+  const show = (next, announce = true) => {
+    current = (next + slides.length) % slides.length;
+    slides.forEach((slide, index) => {
+      const active = index === current;
+      slide.classList.toggle('is-active', active);
+      slide.setAttribute('aria-hidden', String(!active));
+      slide.tabIndex = active ? 0 : -1;
+    });
+    dots.forEach((dot, index) => {
+      const active = index === current;
+      dot.classList.toggle('is-active', active);
+      dot.setAttribute('aria-selected', String(active));
+    });
+    if (announce && status) status.textContent = `Imagem ${current + 1} de ${slides.length}`;
+  };
+  const stop = () => {if (timer) window.clearInterval(timer);};
+  const start = () => {
+    stop();
+    if (!reducedMotion) timer = window.setInterval(() => show(current + 1, false), 5500);
+  };
+  campaignCarousel.querySelector('[data-carousel-prev]').addEventListener('click', () => {show(current - 1);start();});
+  campaignCarousel.querySelector('[data-carousel-next]').addEventListener('click', () => {show(current + 1);start();});
+  dots.forEach(dot => dot.addEventListener('click', () => {show(Number(dot.dataset.carouselDot));start();}));
+  campaignCarousel.addEventListener('mouseenter', stop);
+  campaignCarousel.addEventListener('mouseleave', start);
+  campaignCarousel.addEventListener('focusin', stop);
+  campaignCarousel.addEventListener('focusout', start);
+  campaignCarousel.addEventListener('touchstart', event => {touchStartX = event.changedTouches[0].clientX;stop();},{passive:true});
+  campaignCarousel.addEventListener('touchend', event => {
+    const distance = event.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(distance) > 45) show(current + (distance < 0 ? 1 : -1));
+    start();
+  },{passive:true});
+  start();
+}

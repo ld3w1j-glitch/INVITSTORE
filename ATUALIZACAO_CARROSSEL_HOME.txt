@@ -1,0 +1,22 @@
+INVITSTORE — CARROSSEL DE CAMPANHAS NA PÁGINA PRINCIPAL
+
+COMO ATUALIZAR
+1. Extraia este ZIP na raiz do projeto InvitStore.
+2. Confirme a substituição dos arquivos existentes.
+3. Envie a atualização ao Railway normalmente.
+
+O QUE FOI ADICIONADO
+- Carrossel com 5 campanhas realistas da InvitStore.
+- Troca automática a cada 5,5 segundos.
+- Setas e indicadores para navegação manual.
+- Gesto de deslizar para celular e tablet.
+- Pausa automática durante interação.
+- Compatibilidade com teclado e preferência de movimento reduzido.
+- Imagens WebP otimizadas para carregamento rápido.
+
+SEGURANÇA DA ATUALIZAÇÃO
+- Não altera o banco de dados.
+- Não remove produtos, imagens ou administradores.
+- Não altera pedidos, estoque, gestão ou integração com WhatsApp.
+- O pacote contém somente os arquivos necessários para substituir.
+
