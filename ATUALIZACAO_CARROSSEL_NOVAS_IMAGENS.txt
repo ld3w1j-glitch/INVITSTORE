@@ -1,0 +1,17 @@
+INVITSTORE — NOVAS IMAGENS DO CARROSSEL PRINCIPAL
+
+Extraia este ZIP na raiz do projeto e confirme a substituição.
+
+Imagens aplicadas na ordem:
+1. Campanha editorial da camiseta terracota.
+2. Universo sonoro com fones marrons.
+3. Cesta trançada em lar acolhedor.
+4. Conforto em cerâmica, tecido e verde.
+5. Coleção terracota para casa e estilo.
+
+O carrossel mantém troca automática, setas, indicadores, gesto de deslizar,
+pausa durante a interação e adaptação para computador e celular.
+
+Esta atualização não modifica banco de dados, produtos, usuários, estoque,
+pedidos, configurações ou integração com WhatsApp.
+

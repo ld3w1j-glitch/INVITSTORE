@@ -4,15 +4,15 @@
 <section class="container campaign-carousel" data-campaign-carousel aria-roledescription="carrossel" aria-label="Destaques da InvitStore">
   <div class="campaign-track" data-carousel-track>
     {% set campaigns = [
-      ('01', 'Pequenos achados, grandes momentos — seleção de produtos InvitStore'),
-      ('02', 'Seu estilo, seu momento — camiseta terracota'),
+      ('01', 'Campanha editorial da camiseta terracota'),
+      ('02', 'Universo sonoro com fones marrons'),
       ('03', 'Um lugar para cada coisa — cesta trançada para organização'),
-      ('04', 'Seu som, seu momento — fones de ouvido premium'),
-      ('05', 'Tudo para o seu dia a dia — itens para casa e decoração')
+      ('04', 'Conforto em cerâmica, tecido e verde'),
+      ('05', 'Coleção terracota para casa e estilo')
     ] %}
     {% for number, description in campaigns %}
     <a class="campaign-slide{{ ' is-active' if loop.first }}" data-carousel-slide href="#catalogo" aria-label="{{ description }}. Explorar produtos" aria-hidden="{{ 'false' if loop.first else 'true' }}" tabindex="{{ '0' if loop.first else '-1' }}" style="--campaign-image:url('{{ url_for('static', filename='img/carousel/invitstore-' ~ number ~ '.webp') }}')">
-      <img src="{{ url_for('static', filename='img/carousel/invitstore-' ~ number ~ '.webp') }}" width="1440" height="1800" alt="{{ description }}" {{ 'fetchpriority=high' if loop.first else 'loading=lazy' }}>
+      <img src="{{ url_for('static', filename='img/carousel/invitstore-' ~ number ~ '.webp') }}" width="1122" height="1402" alt="{{ description }}" {{ 'fetchpriority=high' if loop.first else 'loading=lazy' }}>
     </a>
     {% endfor %}
   </div>
