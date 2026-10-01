@@ -1,8 +1,10 @@
 # InvitStore · Loja e painel administrativo
 
-Versão 2.0.2 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
+Versão 2.2.0 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
 
-A identidade segue a InvitStore: a marca vetorial exportada do arquivo Illustrator `design/marca-invitstore-original.ai`, tons de creme e marrom, títulos Bookman e textos Lato. Logotipo, selo, símbolo e etiqueta são utilizados como SVG na loja. A organização em módulos, templates e arquivos estáticos acompanha o padrão estrutural do projeto de referência fornecido.
+A identidade segue a InvitStore: a marca vetorial exportada do arquivo Illustrator `design/marca-invitstore-original.ai`, tons de creme, marrom e terracota, títulos Bookman e textos Lato. Logotipo, selo, símbolo e etiqueta são utilizados como SVG na loja. A versão 2.2.0 incorpora os ornamentos vetoriais do cartaz oficial: volutas, raios, estrelas, ondas, florões, cenas e objetos do cotidiano.
+
+Os novos arquivos ficam em `app/static/img/decor/`. Eles aparecem no destaque da página inicial, nas divisões editoriais, nos grupos de categoria, na página de produto, no resumo do pedido e no rodapé. Todos são decorativos, possuem fundo transparente e não alteram as funções de cadastro, estoque, pedidos ou WhatsApp.
 
 ## Começar no Windows
 

@@ -1,0 +1,12 @@
+INVITSTORE 2.2.0 - ATUALIZACAO VISUAL
+
+COMO APLICAR
+1. Faça backup da pasta atual.
+2. Extraia este ZIP na raiz do projeto InvitStore.
+3. Confirme a substituição dos arquivos existentes.
+4. Reinicie a aplicação ou faça um novo deploy.
+
+A atualização adiciona os contornos SVG do cartaz oficial à vitrine, ao destaque inicial, às categorias, à página de produto, ao pedido e ao rodapé. Banco de dados, uploads e variáveis de ambiente não são incluídos nem alterados.
+
+VALIDAÇÃO
+26 testes automatizados aprovados.
