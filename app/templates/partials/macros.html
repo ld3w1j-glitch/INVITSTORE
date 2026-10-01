@@ -20,7 +20,7 @@
 {%- endmacro %}
 {% macro csrf_field() -%}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{%- endmacro %}
 {% macro product_image(p, class='') -%}
-{% if p.image %}<img class="{{ class }}" src="{{ url_for('site.media', filename=p.image) }}" alt="{{ p.name }}" loading="lazy">
+{% if p.cover_image %}<img class="{{ class }}" src="{{ url_for('site.media', filename=p.cover_image) }}" alt="{{ p.name }}" loading="lazy">
 {% else %}<div class="image-placeholder {{ class }}">{{ icon('box') }}<span>Imagem em breve</span></div>{% endif %}
 {%- endmacro %}
 {% macro pager(page, endpoint, q='', category_id=None, order='recentes') -%}

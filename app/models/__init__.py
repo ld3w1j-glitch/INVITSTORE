@@ -51,6 +51,7 @@ class Product(db.Model):
     owner = db.relationship('User', back_populates='products')
     category = db.relationship('Category', back_populates='products')
     variants = db.relationship('Variant', back_populates='product', cascade='all, delete-orphan', order_by='Variant.id')
+    gallery = db.relationship('ProductImage', back_populates='product', cascade='all, delete-orphan', order_by='ProductImage.sort_order')
     created_at = db.Column(db.DateTime, default=now, nullable=False)
     updated_at = db.Column(db.DateTime, default=now, onupdate=now, nullable=False)
     __table_args__ = (db.CheckConstraint('price_cents > 0'), db.CheckConstraint('stock >= 0'))
@@ -64,6 +65,16 @@ class Product(db.Model):
     @property
     def public(self): return self.active and self.owner.active and self.category.active
 
+    @property
+    def image_files(self):
+        return ([self.image] if self.image else []) + [item.filename for item in self.gallery]
+
+    @property
+    def cover_image(self):
+        files = self.image_files
+        if files: return files[0]
+        return next((variant.image for variant in self.variants if variant.image), None)
+
 class Variant(db.Model):
     __tablename__ = 'variants'
     id = db.Column(db.Integer, primary_key=True)
@@ -72,7 +83,26 @@ class Variant(db.Model):
     price_cents = db.Column(db.Integer)
     stock = db.Column(db.Integer, nullable=False, default=0)
     product = db.relationship('Product', back_populates='variants')
+    image_record = db.relationship('VariantImage', back_populates='variant', cascade='all, delete-orphan', uselist=False)
     __table_args__ = (db.CheckConstraint('stock >= 0'), db.CheckConstraint('price_cents IS NULL OR price_cents > 0'))
+
+    @property
+    def image(self): return self.image_record.filename if self.image_record else None
+
+class ProductImage(db.Model):
+    __tablename__ = 'product_images'
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id', ondelete='CASCADE'), nullable=False, index=True)
+    filename = db.Column(db.String(80), nullable=False, unique=True)
+    sort_order = db.Column(db.Integer, nullable=False, default=0)
+    product = db.relationship('Product', back_populates='gallery')
+
+class VariantImage(db.Model):
+    __tablename__ = 'variant_images'
+    id = db.Column(db.Integer, primary_key=True)
+    variant_id = db.Column(db.Integer, db.ForeignKey('variants.id', ondelete='CASCADE'), nullable=False, unique=True, index=True)
+    filename = db.Column(db.String(80), nullable=False, unique=True)
+    variant = db.relationship('Variant', back_populates='image_record')
 
 class LoginAttempt(db.Model):
     __tablename__ = 'login_attempts'

@@ -8,6 +8,10 @@ def save_image(file):
     if not file or not file.filename: return None
     # Decode and re-encode rather than trusting extension/MIME or preserving payloads.
     try:
+        file.stream.seek(0, 2)
+        size = file.stream.tell()
+        file.stream.seek(0)
+        if size > 8 * 1024 * 1024: raise ValueError('Cada imagem deve ter no máximo 8 MB.')
         with warnings.catch_warnings():
             warnings.simplefilter('error', Image.DecompressionBombWarning)
             im = Image.open(file.stream)
@@ -24,6 +28,17 @@ def save_image(file):
             return filename
     except (UnidentifiedImageError, OSError, Image.DecompressionBombWarning, Image.DecompressionBombError):
         raise ValueError('Não foi possível ler essa imagem. Use JPG, PNG ou WebP de até 8 MB.')
+
+def save_images(files, limit=8):
+    selected = [file for file in files if file and file.filename]
+    if len(selected) > limit: raise ValueError(f'Envie no máximo {limit} imagens por vez.')
+    saved = []
+    try:
+        for file in selected: saved.append(save_image(file))
+        return saved
+    except Exception:
+        for filename in saved: remove_image(filename)
+        raise
 
 def remove_image(filename):
     if filename and Path(filename).name == filename:
@@ -66,4 +81,3 @@ def save_profile_image(file, user_id):
 
 def remove_profile_image(user_id):
     profile_image_path(user_id).unlink(missing_ok=True)
-

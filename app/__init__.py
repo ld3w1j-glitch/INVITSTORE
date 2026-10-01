@@ -47,7 +47,7 @@ def create_app(test_config=None):
     app.jinja_env.filters['price_input'] = lambda cents: f'{(cents or 0)/100:.2f}'
     @app.context_processor
     def common():
-        return {'cart_count':sum(session.get('cart', {}).values()), 'version':'2.2.0'}
+        return {'cart_count':sum(session.get('cart', {}).values()), 'version':'2.3.0'}
 
     @app.after_request
     def headers(response):
@@ -62,7 +62,7 @@ def create_app(test_config=None):
     @app.errorhandler(CSRFError)
     def csrf_error(_): return render_template('error.html', code=400, message='A página expirou. Volte, atualize a página e tente novamente.'), 400
     @app.errorhandler(413)
-    def too_large(_): return render_template('error.html', code=413, message='O arquivo é grande demais. Use uma imagem com até 8 MB.'), 413
+    def too_large(_): return render_template('error.html', code=413, message='O conjunto de imagens é grande demais. Use até 8 MB por imagem e envie menos arquivos de uma vez.'), 413
     for code, message in [(400,'Não foi possível concluir essa solicitação.'),(403,'Você não tem permissão para acessar este conteúdo.'),(404,'Não encontramos essa página.'),(500,'Não foi possível concluir a operação. Tente novamente em instantes.')]:
         def handler(error, code=code, message=message):
             db.session.rollback()

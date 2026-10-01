@@ -1,0 +1,21 @@
+INVITSTORE 2.3.0 - GALERIA E IMAGENS DAS VARIACOES
+
+COMO APLICAR
+1. Faça backup da pasta atual, principalmente da pasta instance ou do volume /data.
+2. Extraia este ZIP na raiz do projeto InvitStore.
+3. Confirme a substituição dos arquivos.
+4. Reinicie a aplicação ou faça um novo deploy.
+
+O QUE MUDA
+- Até 8 imagens por produto, incluindo a imagem principal.
+- Uma imagem opcional para cada variação.
+- Miniaturas na página pública.
+- Troca automática da foto ao selecionar uma variação.
+- Ampliação da imagem ao passar o mouse.
+- Remoção individual de imagens pelo painel.
+
+BANCO DE DADOS
+As tabelas product_images e variant_images são criadas automaticamente na inicialização. Os produtos, imagens e usuários existentes são preservados.
+
+VALIDAÇÃO
+27 testes automatizados aprovados.

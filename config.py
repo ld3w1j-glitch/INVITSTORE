@@ -39,7 +39,7 @@ def settings():
         SQLALCHEMY_ENGINE_OPTIONS={'connect_args': {'timeout': 20}},
         DATA_DIR=data,
         UPLOAD_FOLDER=data / 'uploads',
-        MAX_CONTENT_LENGTH=8 * 1024 * 1024,
+        MAX_CONTENT_LENGTH=64 * 1024 * 1024,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE='Lax',
         SESSION_COOKIE_SECURE=production,

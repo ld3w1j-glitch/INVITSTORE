@@ -3,10 +3,10 @@ from flask_login import current_user, login_required
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from app.extensions import db
-from app.models import Product, Category, Variant, User, PendingOrderItem
+from app.models import Product, ProductImage, Variant, VariantImage, Category, User, PendingOrderItem
 from app.core.security import require_owner, superadmin_required
 from app.services import validation as v
-from app.services.uploads import save_image, remove_image, save_profile_image, remove_profile_image, profile_image_path, profile_image_exists
+from app.services.uploads import save_image, save_images, remove_image, save_profile_image, remove_profile_image, profile_image_path, profile_image_exists
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -38,7 +38,7 @@ def product_form(product=None):
     categories = db.session.scalars(select(Category).where(Category.active.is_(True)).order_by(Category.name)).all()
     if product and product.category not in categories: categories.append(product.category)
     if request.method == 'POST':
-        new_image = None
+        new_files, old_files = [], []
         try:
             name = v.text(request.form.get('name'), 'Nome', 140)
             description = v.text(request.form.get('description'), 'Descrição', 5000, 5)
@@ -47,15 +47,18 @@ def product_form(product=None):
             cat = db.session.get(Category, v.integer(request.form.get('category_id'), 'Categoria', 1))
             if not cat or (not cat.active and (not product or product.category_id != cat.id)):
                 raise ValueError('Escolha uma categoria ativa.')
+
             labels = request.form.getlist('variant_label')
             ids = request.form.getlist('variant_id')
             prices = request.form.getlist('variant_price')
             stocks = request.form.getlist('variant_stock')
+            image_files = request.files.getlist('variant_image')
+            image_files += [None] * (len(labels) - len(image_files))
             if not (len(labels) == len(ids) == len(prices) == len(stocks)) or len(labels) > 50:
                 raise ValueError('Lista de variações inválida. Use até 50 opções.')
             variants = []
             seen_labels, seen_ids = set(), set()
-            for label, vid, amount, qty in zip(labels, ids, prices, stocks):
+            for label, vid, amount, qty, image_file in zip(labels, ids, prices, stocks, image_files):
                 label = v.text(label, 'Variação', 100)
                 if label.casefold() in seen_labels: raise ValueError('Não repita o nome das variações.')
                 seen_labels.add(label.casefold())
@@ -65,31 +68,65 @@ def product_form(product=None):
                     if not product or not variant or variant.product_id != product.id or variant.id in seen_ids:
                         raise ValueError('A variação não pertence a este produto.')
                     seen_ids.add(variant.id)
-                variants.append((variant, label, v.money(amount, True), v.integer(qty, 'Estoque da variação')))
-            new_image = save_image(request.files.get('image'))
+                variants.append((variant, label, v.money(amount, True), v.integer(qty, 'Estoque da variação'), image_file))
+
+            new_primary = save_image(request.files.get('image'))
+            if new_primary: new_files.append(new_primary)
+            new_gallery = save_images(request.files.getlist('gallery_images'), 8)
+            new_files.extend(new_gallery)
+            variant_uploads = []
+            for _, _, _, _, image_file in variants:
+                saved = save_image(image_file)
+                variant_uploads.append(saved)
+                if saved: new_files.append(saved)
+
             if product is None:
                 product = Product(owner_id=current_user.id)
                 db.session.add(product)
-            old_image = product.image
+            old_primary = product.image
+            remove_primary = request.form.get('remove_image') == 'on'
+            next_primary = new_primary or (None if remove_primary else old_primary)
+
+            remove_gallery_ids = set(request.form.getlist('remove_gallery_image'))
+            kept_gallery = []
+            for item in product.gallery:
+                if str(item.id) in remove_gallery_ids: old_files.append(item.filename)
+                else: kept_gallery.append(item)
+            if (1 if next_primary else 0) + len(kept_gallery) + len(new_gallery) > 8:
+                raise ValueError('Use no máximo 8 imagens no total para cada produto.')
+
             product.name, product.description, product.price_cents = name, description, price
             product.stock, product.category = (0 if variants else stock), cat
             product.active = request.form.get('active') == 'on'
             product.featured = request.form.get('featured') == 'on'
-            if new_image: product.image = new_image
-            elif request.form.get('remove_image') == 'on': product.image = None
+            product.image = next_primary
+            if old_primary and old_primary != next_primary: old_files.append(old_primary)
+            product.gallery = kept_gallery + [ProductImage(filename=filename) for filename in new_gallery]
+            for index, item in enumerate(product.gallery): item.sort_order = index
+
+            remove_variant_images = set(request.form.getlist('remove_variant_image'))
+            existing_variants = list(product.variants)
             keep = []
-            for variant, label, amount, qty in variants:
+            for (variant, label, amount, qty, _), uploaded in zip(variants, variant_uploads):
                 variant = variant or Variant()
                 variant.label, variant.price_cents, variant.stock = label, amount, qty
+                if uploaded:
+                    if variant.image: old_files.append(variant.image)
+                    variant.image_record = VariantImage(filename=uploaded)
+                elif variant.id and str(variant.id) in remove_variant_images and variant.image_record:
+                    old_files.append(variant.image)
+                    variant.image_record = None
                 keep.append(variant)
+            for removed in existing_variants:
+                if removed not in keep and removed.image: old_files.append(removed.image)
             product.variants = keep
             db.session.commit()
-            if old_image and old_image != product.image: remove_image(old_image)
-            flash('Produto salvo. O responsável e o WhatsApp estão vinculados ao cadastro.', 'success')
+            for filename in set(old_files): remove_image(filename)
+            flash('Produto salvo com suas imagens e variações.', 'success')
             return redirect(url_for('admin.products'), 303)
         except (ValueError, IntegrityError) as e:
             db.session.rollback()
-            if new_image: remove_image(new_image)
+            for filename in set(new_files): remove_image(filename)
             flash(str(e) if isinstance(e, ValueError) else 'Não foi possível salvar. Confira os dados.', 'error')
             return render_template('admin/product_form.html', product=product if product and product.id else None, categories=categories), 400
     return render_template('admin/product_form.html', product=product, categories=categories)
@@ -114,10 +151,10 @@ def delete_product(product_id):
         p.active = False; db.session.commit()
         flash('Produto com histórico de pedidos: foi ocultado da vitrine para preservar os registros.', 'success')
         return redirect(url_for('admin.products'), 303)
-    image = p.image
+    images = p.image_files + [variant.image for variant in p.variants if variant.image]
     db.session.delete(p)
     db.session.commit()
-    remove_image(image)
+    for filename in set(images): remove_image(filename)
     flash('Produto excluído.', 'success')
     return redirect(url_for('admin.products'), 303)
 

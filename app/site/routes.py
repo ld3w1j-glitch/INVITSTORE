@@ -3,7 +3,7 @@ from pathlib import Path
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, abort, current_app, send_from_directory
 from sqlalchemy import select, or_, func
 from app.extensions import db
-from app.models import Product, Category, User, Variant, PendingOrder, PendingOrderItem
+from app.models import Product, ProductImage, VariantImage, Category, User, Variant, PendingOrder, PendingOrderItem
 from app.services.cart import selection, add_item, resolve_cart, whatsapp_url
 from app.services.validation import integer, text, phone
 
@@ -102,6 +102,10 @@ def checkout(seller_id):
 def media(filename):
     if not re.fullmatch(r'[a-f0-9]{32}\.webp', filename): abort(404)
     p = db.session.scalar(select(Product).where(Product.image == filename))
+    if not p:
+        p = db.session.scalar(select(Product).join(ProductImage).where(ProductImage.filename == filename))
+    if not p:
+        p = db.session.scalar(select(Product).join(Variant).join(VariantImage).where(VariantImage.filename == filename))
     if not p: abort(404)
     if not p.public:
         from flask_login import current_user
@@ -111,7 +115,7 @@ def media(filename):
 @site_bp.get('/health')
 def health():
     db.session.execute(select(1))
-    return {'status':'ok', 'app':'InvitStore', 'version':'2.1.0'}
+    return {'status':'ok', 'app':'InvitStore', 'version':'2.3.0'}
 
 def create_pending(seller, items, name='', notes='', contact=None):
     from app.admin.management import product_cost

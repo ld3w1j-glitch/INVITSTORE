@@ -1,10 +1,12 @@
 # InvitStore · Loja e painel administrativo
 
-Versão 2.2.0 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
+Versão 2.3.0 · Projeto Flask com catálogo público e pedidos pelo WhatsApp.
 
 A identidade segue a InvitStore: a marca vetorial exportada do arquivo Illustrator `design/marca-invitstore-original.ai`, tons de creme, marrom e terracota, títulos Bookman e textos Lato. Logotipo, selo, símbolo e etiqueta são utilizados como SVG na loja. A versão 2.2.0 incorpora os ornamentos vetoriais do cartaz oficial: volutas, raios, estrelas, ondas, florões, cenas e objetos do cotidiano.
 
-Os novos arquivos ficam em `app/static/img/decor/`. Eles aparecem no destaque da página inicial, nas divisões editoriais, nos grupos de categoria, na página de produto, no resumo do pedido e no rodapé. Todos são decorativos, possuem fundo transparente e não alteram as funções de cadastro, estoque, pedidos ou WhatsApp.
+Os novos arquivos ficam em `app/static/img/decor/`. Eles aparecem no destaque da página inicial, nas divisões editoriais, nos grupos de categoria, na página de produto, no resumo do pedido e no rodapé. Todos são decorativos e possuem fundo transparente.
+
+A versão 2.3.0 também permite cadastrar até 8 imagens por produto e uma imagem opcional para cada variação. A página pública exibe miniaturas, troca a foto quando o cliente seleciona uma variação e oferece ampliação ao passar o mouse sobre a imagem principal.
 
 ## Começar no Windows
 
@@ -32,8 +34,8 @@ O programa usa Waitress para o servidor local. A abertura automática do navegad
 
 1. Em **Meu perfil**, confira seu nome público e seu WhatsApp. O nome aparece na vitrine e o telefone recebe as solicitações.
 2. Em **Categorias**, cadastre os grupos de produtos.
-3. Em **Produtos → Novo produto**, informe nome, descrição, categoria, preço e estoque. Envie a foto diretamente do dispositivo.
-4. Se houver opções, adicione variações como “Preto / G” ou “Natural / 500 ml”. Cada opção tem estoque próprio e pode usar o preço base ou outro preço.
+3. Em **Produtos → Novo produto**, informe nome, descrição, categoria, preço e estoque. Escolha a imagem principal e, se desejar, adicione outros ângulos do produto.
+4. Se houver opções, adicione variações como “Preto / G” ou “Natural / 500 ml”. Cada opção tem estoque e imagem próprios e pode usar o preço base ou outro preço.
 5. Em **Administradores**, o administrador principal cria as contas da equipe. Cada novo administrador cadastra e gerencia os próprios produtos.
 
 O catálogo começa vazio para receber seus produtos reais. As versões da marca no site são institucionais e não representam estoque à venda.
@@ -70,7 +72,7 @@ As categorias são compartilhadas. Desativar uma categoria retira da vitrine tod
 
 Os dados locais ficam em `instance/`: `invitstore.db`, `uploads/` e `secret.key`. Copie a pasta inteira com a loja desligada para fazer um backup consistente. Proteja esse backup: ele contém contas e dados da loja.
 
-As fotos aceitam JPG, PNG ou WebP, com limite de 8 MB por solicitação e 20 megapixels. O servidor verifica o conteúdo, remove metadados e salva WebP com até 1800 px. O limite considera o formulário completo; uma imagem muito próxima de 8 MB pode precisar ser reduzida.
+As fotos aceitam JPG, PNG ou WebP, com limite de 8 MB e 20 megapixels por arquivo. O servidor verifica o conteúdo, remove metadados e salva WebP com até 1800 px. Cada produto pode ter até 8 imagens em sua galeria; as variações podem receber uma imagem opcional adicional.
 
 Esta versão usa **SQLite**, indicada para uma única instância da aplicação. Não aponta automaticamente para PostgreSQL. Em hospedagem, banco e fotos precisam de volume persistente.
 
