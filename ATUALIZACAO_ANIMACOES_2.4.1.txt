@@ -1,0 +1,75 @@
+INVITSTORE — ATUALIZAÇÃO VISUAL 2.4.1
+Animações estratégicas sobre a versão 2.4.0
+
+Este é um pacote incremental, não o projeto completo. A versão 2.4.0,
+com os cinco arquivos de campanha e os SVGs da marca, deve estar instalada.
+
+COMO APLICAR
+1. Faça uma cópia de segurança dos três arquivos que serão substituídos.
+2. Extraia este ZIP na raiz do projeto, onde estão app/ e requirements.txt.
+3. Substitua os arquivos indicados abaixo e adicione motion.css.
+4. Envie as alterações e faça um novo deploy do serviço web no Railway
+   ou reinicie a aplicação Flask, se usar outra hospedagem.
+5. Abra a página novamente. Os links de CSS e JavaScript receberam a
+   versão ?v=2.4.1 para evitar o uso dos arquivos antigos em cache.
+
+ARQUIVOS PARA SUBSTITUIR
+- app/templates/base.html
+- app/templates/site/home.html
+- app/static/js/main.js
+
+ARQUIVO NOVO — TAMBÉM PRECISA SER ENVIADO
+- app/static/css/motion.css
+
+Não é necessário instalar dependências nem executar migrações.
+Não substitua .env, instance/, uploads/ nem o volume persistente /data.
+Este pacote não contém banco de dados, senhas ou imagens de produtos.
+A versão do backend permanece 2.4.0; 2.4.1 identifica esta camada visual.
+
+ONDE A MARCA GANHOU MOVIMENTO
+- Carrossel: transição suave entre fotos, aproximação discreta de 3%,
+  legendas em sequência e indicador de tempo sincronizado.
+- Introdução e vitrine: entradas leves ao chegar à tela, com pequenos
+  intervalos entre cards. Os efeitos não repetem a cada rolagem.
+- Ornamentos SVG: abertura das volutas e acomodação delicada de estrelas
+  e ilustrações. Os arquivos originais e a logo não foram modificados.
+- Botão final: uma passagem breve de luz no tom creme, apenas na entrada.
+- Botões, categorias e miniaturas: respostas discretas à interação.
+
+CONTROLES E ACESSIBILIDADE
+- Pausa do carrossel por botão, mouse, foco de teclado e toque.
+- Ao pausar, a foto e o indicador congelam; a retomada usa o tempo restante.
+- A rotação pausa quando o carrossel sai da tela ou a aba fica oculta.
+- Setas do teclado, Home/End, botões e marcadores permitem navegação manual.
+- Deslizar horizontalmente troca a foto; rolagem vertical continua livre.
+- A preferência do dispositivo por movimento reduzido desativa as animações
+  e a rotação automática, inclusive se alterada com a página aberta.
+- Sem JavaScript, a primeira campanha e o catálogo continuam acessíveis;
+  controles que dependem de JavaScript ficam ocultos.
+- As imagens verticais mantêm a proporção no celular; as legendas receberam
+  fundo de contraste. Não foram adicionados serviços, fontes ou scripts externos.
+
+PRESERVADO
+Paleta creme/terracota/espresso, tipografia, logo, SVGs, fotos das campanhas,
+galeria de produtos, imagens das variações, lupa, cadastro, gestão, custos,
+pedidos aguardando aprovação, estoque, previsão de lucro e WhatsApp.
+Nenhuma regra de negócio ou arquivo do backend foi alterado.
+
+AJUSTE FINO OPCIONAL
+O intervalo está no início de app/static/css/motion.css:
+  --campaign-duration: 6500ms;
+Mantenha a unidade ms; o JavaScript lê esse mesmo valor para sincronizar
+a troca automática, a aproximação da imagem e o indicador.
+
+VALIDAÇÃO REALIZADA
+- Sintaxe JavaScript validada.
+- 31 testes Flask aprovados, incluindo carregamento dos arquivos,
+  controles do carrossel, política de segurança e preservação do painel.
+- 11 testes de lógica JavaScript aprovados em ambiente simulado:
+  pausa, retomada, foco, teclado, visibilidade, swipe e movimento reduzido.
+- A inspeção visual em navegador real e a publicação não foram realizadas.
+
+CONFERÊNCIA RÁPIDA APÓS PUBLICAR
+Role a página no computador e no celular. Confira as entradas dos cards,
+pause o carrossel, navegue pelo teclado e abra um produto. Confira também
+com a opção de reduzir movimento ativada nas configurações do dispositivo.

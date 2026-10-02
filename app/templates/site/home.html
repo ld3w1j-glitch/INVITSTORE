@@ -2,7 +2,7 @@
 {% block content %}
 {% if not q and not category_id %}
 <section class="container campaign-carousel" data-campaign-carousel aria-roledescription="carrossel" aria-label="Destaques da InvitStore">
-  <div class="campaign-track" data-carousel-track>
+  <div class="campaign-track" data-carousel-track aria-live="off">
     {% set campaigns = [
       ('01', 'Campanha editorial da camiseta terracota'),
       ('02', 'Universo sonoro com fones marrons'),
@@ -11,19 +11,19 @@
       ('05', 'Coleção terracota para casa e estilo')
     ] %}
     {% for number, description in campaigns %}
-    <a class="campaign-slide{{ ' is-active' if loop.first }}" data-carousel-slide href="#catalogo" aria-label="{{ description }}. Explorar produtos" aria-hidden="{{ 'false' if loop.first else 'true' }}" tabindex="{{ '0' if loop.first else '-1' }}" style="--campaign-image:url('{{ url_for('static', filename='img/carousel/invitstore-' ~ number ~ '.webp') }}')">
+    <a class="campaign-slide campaign-slide--{{ number }}{{ ' is-active' if loop.first }}" id="campaign-slide-{{ number }}" data-carousel-slide href="#catalogo" aria-label="{{ loop.index }} de {{ campaigns|length }}: {{ description }}. Explorar produtos" aria-hidden="{{ 'false' if loop.first else 'true' }}" tabindex="{{ '0' if loop.first else '-1' }}">
       <img src="{{ url_for('static', filename='img/carousel/invitstore-' ~ number ~ '.webp') }}" width="1122" height="1402" alt="{{ description }}" {{ 'fetchpriority=high' if loop.first else 'loading=lazy' }}>
       <span class="campaign-caption"><small>COLEÇÃO INVITSTORE</small><strong>{{ description }}</strong><em>Ver produtos</em></span>
     </a>
     {% endfor %}
   </div>
-  <button class="campaign-arrow campaign-arrow--prev" type="button" data-carousel-prev aria-label="Imagem anterior">{{ icon('chevron-left') }}</button>
-  <button class="campaign-arrow campaign-arrow--next" type="button" data-carousel-next aria-label="Próxima imagem">{{ icon('chevron-right') }}</button>
-  <div class="campaign-dots" role="tablist" aria-label="Escolher imagem do carrossel">
-    {% for number, description in campaigns %}<button class="campaign-dot{{ ' is-active' if loop.first }}" type="button" data-carousel-dot="{{ loop.index0 }}" role="tab" aria-label="Ver imagem {{ loop.index }}" aria-selected="{{ 'true' if loop.first else 'false' }}"></button>{% endfor %}
+  <button class="campaign-arrow campaign-arrow--prev" type="button" data-carousel-prev data-carousel-control hidden aria-label="Imagem anterior">{{ icon('chevron-left') }}</button>
+  <button class="campaign-arrow campaign-arrow--next" type="button" data-carousel-next data-carousel-control hidden aria-label="Próxima imagem">{{ icon('chevron-right') }}</button>
+  <div class="campaign-dots" role="group" data-carousel-control hidden aria-label="Escolher imagem do carrossel">
+    {% for number, description in campaigns %}<button class="campaign-dot{{ ' is-active' if loop.first }}" type="button" data-carousel-dot="{{ loop.index0 }}" aria-label="Ver imagem {{ loop.index }}: {{ description }}" aria-controls="campaign-slide-{{ number }}" aria-current="{{ 'true' if loop.first else 'false' }}"></button>{% endfor %}
   </div>
-  <button class="campaign-toggle" type="button" data-carousel-toggle aria-label="Pausar rotação automática" aria-pressed="false"><span aria-hidden="true">Ⅱ</span></button>
-  <span class="campaign-progress" aria-hidden="true"><i data-carousel-progress></i></span>
+  <button class="campaign-toggle" type="button" data-carousel-toggle data-carousel-control hidden aria-label="Pausar rotação automática" aria-pressed="false"><span aria-hidden="true">Ⅱ</span></button>
+  <span class="campaign-progress" data-carousel-control hidden aria-hidden="true"><i data-carousel-progress></i></span>
   <p class="sr-only" data-carousel-status aria-live="polite">Imagem 1 de 5</p>
 </section>
 <div class="container ornamental-divider" aria-hidden="true"><img src="{{ url_for('static', filename='img/decor/voluta-esquerda.svg') }}" alt=""><img src="{{ url_for('static', filename='img/decor/flora.svg') }}" alt=""><img src="{{ url_for('static', filename='img/decor/voluta-direita.svg') }}" alt=""></div>

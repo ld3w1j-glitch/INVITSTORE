@@ -5,8 +5,9 @@
 <meta name="theme-color" content="#3E2A1F"><meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{% block title %}InvitStore · Tudo para o seu dia a dia{% endblock %}</title>
 <link rel="icon" href="{{ url_for('static', filename='img/marca-simbolo.svg') }}" type="image/svg+xml">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='2.4.1') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/motion.css', v='2.4.1') }}">
+<script src="{{ url_for('static', filename='js/main.js', v='2.4.1') }}" defer></script>
 {% block head %}{% endblock %}</head><body class="{% block body_class %}{% endblock %}">
 <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 {% block header %}<div class="announcement"><span>✦</span> Qualidade, variedade e uma conversa mais próxima. <span>✦</span></div>
